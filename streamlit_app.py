@@ -269,7 +269,7 @@ def main():
                 ))
             
             fig.update_layout(
-                title="Year별 Powertrain Market Share Trend",
+                title="Powertrain Market Share Trend by Year",
                 xaxis_title="Year",
                 yaxis_title="Market Share (%)",
                 hovermode='x unified',
