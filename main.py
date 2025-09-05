@@ -1,6 +1,6 @@
 """
-Automotive Powertrain Production Trend 메인 실행 파일
-전체 분석 파이프라인을 실행하고 결과를 생성합니다.
+Automotive Powertrain Production Trend Main Exe. File
+Execute entire analysis pipeline and create result.
 """
 
 
@@ -34,29 +34,29 @@ logger = logging.getLogger(__name__)
 
 
 def run_full_analysis():
-    """전체 분석 파이프라인을 실행합니다."""
+    """Executing entire analysis pipeline."""
     
     start_time = datetime.now()
     logger.info("=== Automotive Powertrain Production Trend Start ===")
     
     try:
         # 1. 데이터 로딩
-        logger.info("1단계: 데이터 로딩")
+        logger.info("Step 1: Loading Data")
         file_path = "data/20250701_LV_Prod_Extended_Pivot.xlsb"
         df = load_excel_data(file_path)
         
         # 데이터 정보 출력
         info = get_data_info(df)
-        logger.info(f"데이터 크기: {info['shape']}")
-        logger.info(f"컬럼 수: {len(info['columns'])}")
+        logger.info(f"Data Size: {info['shape']}")
+        logger.info(f"No. of Columns: {len(info['columns'])}")
         
         # 2. Year 컬럼 추출
-        logger.info("2단계: Year 컬럼 추출")
+        logger.info("Step 2: Extracting Year Column")
         df, year_cols = extract_year_columns(df)
-        logger.info(f"분석 Year: {year_cols[0]} ~ {year_cols[-1]} ({len(year_cols)}년)")
+        logger.info(f"Analysis Year: {year_cols[0]} ~ {year_cols[-1]} ({len(year_cols)}년)")
         
         # 3. Powertrain 분류
-        logger.info("3단계: Powertrain 분류")
+        logger.info("Step 3: Powertrain Classification")
         df = classify_powertrain(df)
         
         # Classification Result 확인
@@ -65,39 +65,39 @@ def run_full_analysis():
         
         # 분류 검증
         validation = validate_powertrain_classification(df)
-        logger.info(f"분류 검증 완료: EV {len(validation['ev_samples'])}개, HEV {len(validation['hev_samples'])}개, ICE {len(validation['ice_samples'])}개")
+        logger.info(f"Validation Complete: EV {len(validation['ev_samples'])}, HEV {len(validation['hev_samples'])}개, ICE {len(validation['ice_samples'])}개")
         
         # 4. Prod. Vol. 집계
-        logger.info("4단계: Prod. Vol. 집계")
+        logger.info("Step 4: Aggregate Prod. Vol.")
         agg_df = aggregate_production_by_year(df, year_cols)
-        logger.info(f"집계 완료: {agg_df.shape}")
+        logger.info(f"Aggregation Complete: {agg_df.shape}")
         
         # 5. Market Share 계산
-        logger.info("5단계: Market Share 계산")
+        logger.info("Step 5: Market Share Calculation")
         share_df = calculate_market_share(agg_df, year_cols)
-        logger.info("Market Share 계산 완료")
+        logger.info("Market Share Calculation Complete")
         
         # 6. Pace of Transition 분석
-        logger.info("6단계: Pace of Transition 분석")
+        logger.info("Step 6: Pace of Transition Analysis")
         transition = get_transition_analysis(share_df, year_cols)
         logger.info(f"Pace of Transition: {transition['share_change']:.2f}%p ({transition['start_year']}→{transition['end_year']})")
         
         # 7. Analysis by Region
-        logger.info("7단계: Analysis by Region")
+        logger.info("Step 7: Analysis by Region")
         regional_results = get_regional_analysis(df, year_cols)
-        logger.info(f"Analysis by Region 완료: {len(regional_results)}개 Region")
+        logger.info(f"Analysis by Region Complete: {len(regional_results)}개 Region")
         
         # 8. Top Region 선정
-        logger.info("8단계: Top Region 선정")
+        logger.info("Step 8: Top Region Selection")
         top_regions = get_top_regions_by_ev_share(regional_results)
-        logger.info(f"Top Region 선정 완료: {len(top_regions)}개 Region")
+        logger.info(f"Top Region Selection Complete: {len(top_regions)}개 Region")
         
         # 9. 출력 디렉토리 생성
-        logger.info("9단계: 출력 디렉토리 생성")
+        logger.info("Step 9: Output Directory Creation")
         os.makedirs("outputs", exist_ok=True)
         
         # 10. 시각화 생성
-        logger.info("10단계: 시각화 생성")
+        logger.info("Step 10: Visualization Creation")
         
         # Prod. Volume Trend
         plot_production_trends(agg_df, year_cols, "outputs/production_trends.png")
@@ -118,23 +118,23 @@ def run_full_analysis():
                                "outputs/summary_dashboard.png")
         
         # 11. 결과 요약
-        logger.info("11단계: 결과 요약")
+        logger.info("11단계: Summary")
         print("\n" + "="*60)
-        print("📊 Automotive Powertrain Production Trend 결과")
+        print("📊 Automotive Powertrain Production Trend Summary")
         print("="*60)
         
-        print(f"\n📈 Pace of Transition 분석 ({transition['start_year']} → {transition['end_year']})")
+        print(f"\n📈 Pace of Transition Analysis ({transition['start_year']} → {transition['end_year']})")
         print(f"   • Start EV Portion: {transition['start_ev_share']:.1f}%")
         print(f"   • End EV Portion: {transition['end_ev_share']:.1f}%")
-        print(f"   • 변화량: {transition['share_change']:.1f}%p")
-        print(f"   • Prod. Vol. Change: {transition['production_change']/1e6:.1f}M 대")
+        print(f"   • Change : {transition['share_change']:.1f}%p")
+        print(f"   • Prod. Vol. Change: {transition['production_change']/1e6:.1f}M ")
         
         if len(top_regions) > 0:
-            print(f"\n🏆 2030년 EV Portion Top Region")
+            print(f"\n🏆 2030 EV Portion Top Region")
             for i, (_, row) in enumerate(top_regions.head(5).iterrows(), 1):
                 print(f"   {i}. {row['region']}: {row['ev_share']:.1f}%")
         
-        print(f"\n📁 생성된 파일:")
+        print(f"\n📁 files created:")
         print(f"   • outputs/production_trends.png")
         print(f"   • outputs/market_share_trends.png")
         print(f"   • outputs/top_regions_ev_share.png")
@@ -144,7 +144,7 @@ def run_full_analysis():
         # 실행 시간 계산
         end_time = datetime.now()
         execution_time = end_time - start_time
-        logger.info(f"분석 완료! 실행 시간: {execution_time}")
+        logger.info(f"Analysis Complete! Execution time: {execution_time}")
         
         return {
             'success': True,
@@ -157,7 +157,7 @@ def run_full_analysis():
         }
         
     except Exception as e:
-        logger.error(f"분석 중 오류 발생: {e}")
+        logger.error(f"Error has occurred during analysis: {e}")
         return {
             'success': False,
             'error': str(e)
@@ -165,17 +165,17 @@ def run_full_analysis():
 
 
 def main():
-    """메인 실행 함수"""
+    """Main Function Execution"""
     print("🚗 Automotive Powertrain Production Trend")
     print("="*50)
     
     result = run_full_analysis()
     
     if result['success']:
-        print(f"\n✅ 분석이 성공적으로 완료되었습니다!")
-        print(f"⏱️  실행 시간: {result['execution_time']}")
+        print(f"\n✅ Analysis Successfully Complete!")
+        print(f"⏱️  Execution Time: {result['execution_time']}")
     else:
-        print(f"\n❌ 분석 중 오류가 발생했습니다: {result['error']}")
+        print(f"\n❌ Error has Occurred during Analysis: {result['error']}")
         sys.exit(1)
 
 
