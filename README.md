@@ -230,4 +230,4 @@ streamlit run streamlit_app.py --server.port 8502
 
 ## License
 
-This project is intended for educational and research purposes.
+___This project is intended for educational and research purposes.___
