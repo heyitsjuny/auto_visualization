@@ -228,9 +228,5 @@ pip install pyxlsb
 streamlit run streamlit_app.py --server.port 8502
 ```
 
-## License
-
-_This project is intended for educational and research purposes._
-
 ## Disclaimer
-> _This project was developed with the support of OpenAI._
+> _This project was developed with the support of OpenAI, and is intended for educational and research purposes only._
