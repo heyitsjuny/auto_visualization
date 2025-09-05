@@ -42,15 +42,15 @@ def load_excel_data(file_path: str) -> pd.DataFrame:
 
 def extract_year_columns(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
     """
-    연도별 생산량 컬럼을 추출하고 정리합니다.
+    Year별 생산량 컬럼을 추출하고 정리합니다.
     
     Args:
         df (pd.DataFrame): 원본 데이터프레임
         
     Returns:
-        Tuple[pd.DataFrame, List[str]]: 정리된 데이터프레임과 연도 컬럼 리스트
+        Tuple[pd.DataFrame, List[str]]: 정리된 데이터프레임과 Year 컬럼 리스트
     """
-    # 연도 컬럼 패턴 찾기 (CY 2023 ~ CY 2037)
+    # Year 컬럼 패턴 찾기 (CY 2023 ~ CY 2037)
     year_pattern = r'CY\s*(\d{4})'
     year_columns = []
     
@@ -60,14 +60,14 @@ def extract_year_columns(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
             year = match.group(1)
             year_columns.append((col, year))
     
-    # 연도 컬럼명 변경
+    # Year 컬럼명 변경
     for old_col, year in year_columns:
         df = df.rename(columns={old_col: year})
     
     year_cols = [year for _, year in year_columns]
     year_cols.sort()
     
-    logger.info(f"연도 컬럼 추출 완료: {len(year_cols)}개 ({year_cols[0]}~{year_cols[-1]})")
+    logger.info(f"Year 컬럼 추출 완료: {len(year_cols)}개 ({year_cols[0]}~{year_cols[-1]})")
     
     return df, year_cols
 
@@ -102,12 +102,12 @@ def main():
         # 데이터 로딩
         df = load_excel_data(file_path)
         
-        # 연도 컬럼 추출
+        # Year 컬럼 추출
         df, year_cols = extract_year_columns(df)
         
         # 데이터 정보 출력
         info = get_data_info(df)
-        print(f"연도 컬럼: {year_cols}")
+        print(f"Year 컬럼: {year_cols}")
         print(f"컬럼 수: {len(df.columns)}")
         
         return df, year_cols

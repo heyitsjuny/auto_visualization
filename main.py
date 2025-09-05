@@ -50,10 +50,10 @@ def run_full_analysis():
         logger.info(f"데이터 크기: {info['shape']}")
         logger.info(f"컬럼 수: {len(info['columns'])}")
         
-        # 2. 연도 컬럼 추출
-        logger.info("2단계: 연도 컬럼 추출")
+        # 2. Year 컬럼 추출
+        logger.info("2단계: Year 컬럼 추출")
         df, year_cols = extract_year_columns(df)
-        logger.info(f"분석 연도: {year_cols[0]} ~ {year_cols[-1]} ({len(year_cols)}년)")
+        logger.info(f"분석 Year: {year_cols[0]} ~ {year_cols[-1]} ({len(year_cols)}년)")
         
         # 3. 파워트레인 분류
         logger.info("3단계: 파워트레인 분류")
@@ -77,15 +77,15 @@ def run_full_analysis():
         share_df = calculate_market_share(agg_df, year_cols)
         logger.info("점유율 계산 완료")
         
-        # 6. 전환 속도 분석
-        logger.info("6단계: 전환 속도 분석")
+        # 6. Pace of Transition 분석
+        logger.info("6단계: Pace of Transition 분석")
         transition = get_transition_analysis(share_df, year_cols)
-        logger.info(f"전환 속도: {transition['share_change']:.2f}%p ({transition['start_year']}→{transition['end_year']})")
+        logger.info(f"Pace of Transition: {transition['share_change']:.2f}%p ({transition['start_year']}→{transition['end_year']})")
         
-        # 7. 지역별 분석
-        logger.info("7단계: 지역별 분석")
+        # 7. Analysis by Region
+        logger.info("7단계: Analysis by Region")
         regional_results = get_regional_analysis(df, year_cols)
-        logger.info(f"지역별 분석 완료: {len(regional_results)}개 지역")
+        logger.info(f"Analysis by Region 완료: {len(regional_results)}개 지역")
         
         # 8. 상위 지역 선정
         logger.info("8단계: 상위 지역 선정")
@@ -99,17 +99,17 @@ def run_full_analysis():
         # 10. 시각화 생성
         logger.info("10단계: 시각화 생성")
         
-        # 생산량 추이
+        # Prod. Volume Trend
         plot_production_trends(agg_df, year_cols, "outputs/production_trends.png")
         
-        # 점유율 변화
+        # Market Share Trend
         plot_market_share_trends(share_df, year_cols, "outputs/market_share_trends.png")
         
         # 상위 지역 EV 비중
         if len(top_regions) > 0:
             plot_top_regions_ev_share(top_regions, save_path="outputs/top_regions_ev_share.png")
         
-        # 전환 속도 비교
+        # Pace of Transition 비교
         if regional_results:
             plot_transition_speed_comparison(regional_results, save_path="outputs/transition_speed.png")
         
@@ -123,7 +123,7 @@ def run_full_analysis():
         print("📊 Automotive Powertrain Production Trend 결과")
         print("="*60)
         
-        print(f"\n📈 전환 속도 분석 ({transition['start_year']} → {transition['end_year']})")
+        print(f"\n📈 Pace of Transition 분석 ({transition['start_year']} → {transition['end_year']})")
         print(f"   • 시작 EV 비중: {transition['start_ev_share']:.1f}%")
         print(f"   • 종료 EV 비중: {transition['end_ev_share']:.1f}%")
         print(f"   • 변화량: {transition['share_change']:.1f}%p")

@@ -1,6 +1,6 @@
 """
 시각화 모듈
-파워트레인 생산 트렌드와 점유율 변화를 다양한 차트로 시각화합니다.
+파워트레인 생산 트렌드와 Market Share Trend를 다양한 차트로 시각화합니다.
 """
 
 import matplotlib.pyplot as plt
@@ -30,11 +30,11 @@ def setup_plot_style():
 def plot_production_trends(agg_df: pd.DataFrame, year_columns: List[str], 
                           save_path: Optional[str] = None) -> plt.Figure:
     """
-    파워트레인별 생산량 추이를 선 그래프로 시각화합니다.
+    파워트레인별 Prod. Volume Trend를 선 그래프로 시각화합니다.
     
     Args:
         agg_df (pd.DataFrame): 집계된 생산량 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -68,7 +68,7 @@ def plot_production_trends(agg_df: pd.DataFrame, year_columns: List[str],
     
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        logger.info(f"생산량 추이 그래프 저장: {save_path}")
+        logger.info(f"Prod. Volume Trend 그래프 저장: {save_path}")
     
     return fig
 
@@ -76,11 +76,11 @@ def plot_production_trends(agg_df: pd.DataFrame, year_columns: List[str],
 def plot_market_share_trends(share_df: pd.DataFrame, year_columns: List[str], 
                             save_path: Optional[str] = None) -> plt.Figure:
     """
-    파워트레인 점유율 변화를 스택 영역 차트로 시각화합니다.
+    파워트레인 Market Share Trend를 스택 영역 차트로 시각화합니다.
     
     Args:
         share_df (pd.DataFrame): 점유율 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -120,7 +120,7 @@ def plot_market_share_trends(share_df: pd.DataFrame, year_columns: List[str],
     
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        logger.info(f"점유율 변화 그래프 저장: {save_path}")
+        logger.info(f"Market Share Trend 그래프 저장: {save_path}")
     
     return fig
 
@@ -132,7 +132,7 @@ def plot_top_regions_ev_share(top_regions_df: pd.DataFrame, target_year: str = '
     
     Args:
         top_regions_df (pd.DataFrame): 상위 지역 데이터프레임
-        target_year (str): 기준 연도
+        target_year (str): 기준 Year
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -175,12 +175,12 @@ def plot_transition_speed_comparison(regional_results: Dict[str, pd.DataFrame],
                                    start_year: str = '2023', end_year: str = '2037',
                                    save_path: Optional[str] = None) -> plt.Figure:
     """
-    지역별 전환 속도를 비교하는 바 차트를 생성합니다.
+    지역별 Pace of Transition를 비교하는 바 차트를 생성합니다.
     
     Args:
-        regional_results (Dict[str, pd.DataFrame]): 지역별 분석 결과
-        start_year (str): 시작 연도
-        end_year (str): 종료 연도
+        regional_results (Dict[str, pd.DataFrame]): Analysis by Region 결과
+        start_year (str): 시작 Year
+        end_year (str): 종료 Year
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -188,7 +188,7 @@ def plot_transition_speed_comparison(regional_results: Dict[str, pd.DataFrame],
     """
     setup_plot_style()
     
-    # 전환 속도 계산
+    # Pace of Transition 계산
     transition_data = []
     for region, region_df in regional_results.items():
         ev_data = region_df[region_df['powertrain_type'] == 'EV']
@@ -240,7 +240,7 @@ def plot_transition_speed_comparison(regional_results: Dict[str, pd.DataFrame],
     
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        logger.info(f"전환 속도 비교 그래프 저장: {save_path}")
+        logger.info(f"Pace of Transition 비교 그래프 저장: {save_path}")
     
     return fig
 
@@ -253,9 +253,9 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     
     Args:
         share_df (pd.DataFrame): 점유율 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         top_regions_df (pd.DataFrame): 상위 지역 데이터프레임
-        transition_analysis (Dict): 전환 속도 분석 결과
+        transition_analysis (Dict): Pace of Transition 분석 결과
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -268,7 +268,7 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     # 서브플롯 생성
     gs = fig.add_gridspec(3, 2, hspace=0.3, wspace=0.3)
     
-    # 1. 점유율 변화 (상단 전체)
+    # 1. Market Share Trend (상단 전체)
     ax1 = fig.add_subplot(gs[0, :])
     colors = {'EV': '#2E8B57', 'HEV': '#FF6B35', 'ICE': '#4682B4'}
     
@@ -300,7 +300,7 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     ax2.set_ylabel('EV Share (%)', fontsize=12)
     ax2.grid(True, alpha=0.3, axis='y')
     
-    # 3. 전환 속도 요약 (우하단)
+    # 3. Pace of Transition 요약 (우하단)
     ax3 = fig.add_subplot(gs[1, 1])
     transition_text = f"""
     EV Transition Analysis ({transition_analysis.get('start_year', '2023')} → {transition_analysis.get('end_year', '2037')})
@@ -317,7 +317,7 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     ax3.set_title('Global EV Transition Summary', fontsize=14, fontweight='bold')
     ax3.axis('off')
     
-    # 4. 연도별 생산량 추이 (하단 전체)
+    # 4. Year별 Prod. Volume Trend (하단 전체)
     ax4 = fig.add_subplot(gs[2, :])
     for _, row in share_df.iterrows():
         powertrain_type = row['powertrain_type']
@@ -361,7 +361,7 @@ def main():
         agg_df = aggregate_production_by_year(df, year_cols)
         share_df = calculate_market_share(agg_df, year_cols)
         
-        # 지역별 분석
+        # Analysis by Region
         regional_results = get_regional_analysis(df, year_cols)
         top_regions = get_top_regions_by_ev_share(regional_results)
         transition = get_transition_analysis(share_df, year_cols)

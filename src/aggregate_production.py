@@ -1,6 +1,6 @@
 """
 생산량 집계 및 점유율 계산 모듈
-파워트레인별 연도별 생산량을 집계하고 점유율을 계산합니다.
+파워트레인별 Year별 생산량을 집계하고 점유율을 계산합니다.
 """
 
 import pandas as pd
@@ -15,16 +15,16 @@ logger = logging.getLogger(__name__)
 
 def aggregate_production_by_year(df: pd.DataFrame, year_columns: List[str]) -> pd.DataFrame:
     """
-    파워트레인별 연도별 생산량을 집계합니다.
+    파워트레인별 Year별 생산량을 집계합니다.
     
     Args:
         df (pd.DataFrame): 분류된 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         
     Returns:
         pd.DataFrame: 집계된 생산량 데이터프레임
     """
-    # 파워트레인별로 그룹화하여 연도별 생산량 합계 계산
+    # 파워트레인별로 그룹화하여 Year별 생산량 합계 계산
     agg_data = []
     
     for powertrain_type in ['EV', 'HEV', 'ICE']:
@@ -43,7 +43,7 @@ def aggregate_production_by_year(df: pd.DataFrame, year_columns: List[str]) -> p
     # 데이터프레임으로 변환
     agg_df = pd.DataFrame(agg_data)
     
-    # 연도 컬럼을 숫자로 변환하여 정렬
+    # Year 컬럼을 숫자로 변환하여 정렬
     for year in year_columns:
         if year in agg_df.columns:
             agg_df[year] = pd.to_numeric(agg_df[year], errors='coerce')
@@ -54,11 +54,11 @@ def aggregate_production_by_year(df: pd.DataFrame, year_columns: List[str]) -> p
 
 def calculate_market_share(agg_df: pd.DataFrame, year_columns: List[str]) -> pd.DataFrame:
     """
-    연도별 파워트레인 점유율을 계산합니다.
+    Year별 파워트레인 점유율을 계산합니다.
     
     Args:
         agg_df (pd.DataFrame): 집계된 생산량 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         
     Returns:
         pd.DataFrame: 점유율이 추가된 데이터프레임
@@ -68,7 +68,7 @@ def calculate_market_share(agg_df: pd.DataFrame, year_columns: List[str]) -> pd.
     
     for year in year_columns:
         if year in share_df.columns:
-            # 해당 연도의 총 생산량 계산
+            # 해당 Year의 총 생산량 계산
             total_production = share_df[year].sum()
             
             if total_production > 0:
@@ -88,11 +88,11 @@ def get_regional_analysis(df: pd.DataFrame, year_columns: List[str],
     
     Args:
         df (pd.DataFrame): 원본 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
+        year_columns (List[str]): Year 컬럼 리스트
         region_column (str): 지역 컬럼명
         
     Returns:
-        Dict[str, pd.DataFrame]: 지역별 분석 결과
+        Dict[str, pd.DataFrame]: Analysis by Region 결과
     """
     if region_column not in df.columns:
         logger.warning(f"지역 컬럼 '{region_column}'을 찾을 수 없습니다.")
@@ -113,26 +113,26 @@ def get_regional_analysis(df: pd.DataFrame, year_columns: List[str],
         
         regional_results[region] = region_share
     
-    logger.info(f"지역별 분석 완료: {len(regional_results)}개 지역")
+    logger.info(f"Analysis by Region 완료: {len(regional_results)}개 지역")
     return regional_results
 
 
 def get_transition_analysis(agg_df: pd.DataFrame, year_columns: List[str], 
                            start_year: str = '2023', end_year: str = '2037') -> Dict[str, float]:
     """
-    전환 속도 분석을 수행합니다 (특정 기간의 EV 비중 변화).
+    Pace of Transition 분석을 수행합니다 (특정 기간의 EV 비중 변화).
     
     Args:
         agg_df (pd.DataFrame): 집계된 데이터프레임
-        year_columns (List[str]): 연도 컬럼 리스트
-        start_year (str): 시작 연도
-        end_year (str): 종료 연도
+        year_columns (List[str]): Year 컬럼 리스트
+        start_year (str): 시작 Year
+        end_year (str): 종료 Year
         
     Returns:
-        Dict[str, float]: 전환 속도 분석 결과
+        Dict[str, float]: Pace of Transition 분석 결과
     """
     if start_year not in year_columns or end_year not in year_columns:
-        logger.error(f"분석 연도가 유효하지 않습니다: {start_year}, {end_year}")
+        logger.error(f"분석 Year가 유효하지 않습니다: {start_year}, {end_year}")
         return {}
     
     # EV 데이터 추출
@@ -144,7 +144,7 @@ def get_transition_analysis(agg_df: pd.DataFrame, year_columns: List[str],
     
     ev_row = ev_data.iloc[0]
     
-    # 시작 연도와 종료 연도의 EV 생산량
+    # 시작 Year와 종료 Year의 EV 생산량
     start_production = ev_row[start_year]
     end_production = ev_row[end_year]
     
@@ -170,18 +170,18 @@ def get_transition_analysis(agg_df: pd.DataFrame, year_columns: List[str],
         'production_change': production_change
     }
     
-    logger.info(f"전환 속도 분석 완료: {start_year}→{end_year}, EV 비중 변화: {share_change:.2f}%p")
+    logger.info(f"Pace of Transition 분석 완료: {start_year}→{end_year}, EV 비중 변화: {share_change:.2f}%p")
     return transition_analysis
 
 
 def get_top_regions_by_ev_share(regional_results: Dict[str, pd.DataFrame], 
                                target_year: str = '2030', top_n: int = 5) -> pd.DataFrame:
     """
-    특정 연도 기준 EV 비중 상위 지역을 반환합니다.
+    특정 Year 기준 EV 비중 상위 지역을 반환합니다.
     
     Args:
-        regional_results (Dict[str, pd.DataFrame]): 지역별 분석 결과
-        target_year (str): 기준 연도
+        regional_results (Dict[str, pd.DataFrame]): Analysis by Region 결과
+        target_year (str): 기준 Year
         top_n (int): 상위 개수
         
     Returns:
@@ -231,9 +231,9 @@ def main():
         share_df = calculate_market_share(agg_df, year_cols)
         print(f"점유율 계산 완료: {share_df.shape}")
         
-        # 전환 속도 분석
+        # Pace of Transition 분석
         transition = get_transition_analysis(share_df, year_cols)
-        print(f"전환 속도: {transition}")
+        print(f"Pace of Transition: {transition}")
         
         return share_df
         

@@ -1,6 +1,6 @@
 """
 Automotive Powertrain Production Trend
-Streamlit을 사용한 인터랙티브 웹 애플리케이션
+Interactive Web Application using Streamlit
 """
 
 import streamlit as st
@@ -62,7 +62,7 @@ st.markdown("""
 
 @st.cache_data
 def load_and_process_data():
-    """데이터 로딩 및 전처리 (캐싱 적용)"""
+    """Data Loading and Pre-Processing (Apply Caching)"""
     try:
         # 데이터 로딩 - 절대 경로 사용
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -70,12 +70,12 @@ def load_and_process_data():
         
         # 파일 존재 확인
         if not os.path.exists(file_path):
-            st.error(f"데이터 파일을 찾을 수 없습니다: {file_path}")
+            st.error(f"Cannot find data file: {file_path}")
             return None
             
         df = load_excel_data(file_path)
         
-        # 연도 컬럼 추출
+        # Year 컬럼 추출
         df, year_cols = extract_year_columns(df)
         
         # 파워트레인 분류
@@ -87,10 +87,10 @@ def load_and_process_data():
         # 점유율 계산
         market_share_data = calculate_market_share(production_data, year_cols)
         
-        # 지역별 분석
+        # Analysis by Region
         regional_data = get_regional_analysis(df, year_cols)
         
-        # 전환 속도 분석
+        # Pace of Transition 분석
         transition_data = get_transition_analysis(market_share_data, year_cols)
         
         # 상위 지역 분석
@@ -106,29 +106,29 @@ def load_and_process_data():
             'top_regions': top_regions
         }
     except Exception as e:
-        st.error(f"데이터 로딩 중 오류가 발생했습니다: {str(e)}")
+        st.error(f"Error has occurred while loading data: {str(e)}")
         return None
 
 def main():
-    """메인 애플리케이션"""
+    """Main Application"""
     
     # 헤더
     st.markdown('<h1 class="main-header">🚗 Automotive Powertrain Production Trend</h1>', unsafe_allow_html=True)
     
     # 데이터 로딩
-    with st.spinner("데이터를 로딩하고 분석 중입니다..."):
+    with st.spinner("Loading and Analyzing Data..."):
         data = load_and_process_data()
     
     if data is None:
-        st.error("데이터를 불러올 수 없습니다. 파일 경로를 확인해주세요.")
+        st.error("Cannot load data. Please check the file directory.")
         return
     
     # 사이드바 설정
-    st.sidebar.markdown('<h3 class="sidebar-header">📊 분석 설정</h3>', unsafe_allow_html=True)
+    st.sidebar.markdown('<h3 class="sidebar-header">📊 Analysis Setting</h3>', unsafe_allow_html=True)
     
-    # 연도 선택
+    # Year 선택
     selected_years = st.sidebar.multiselect(
-        "분석 연도 선택",
+        "Select Year",
         options=data['year_cols'],
         default=['2023', '2025', '2030', '2035', '2037']
     )
@@ -136,7 +136,7 @@ def main():
     # 지역 선택
     regions = ['Greater China', 'Europe', 'Americas', 'Asia Pacific']
     selected_regions = st.sidebar.multiselect(
-        "분석 지역 선택",
+        "Select Region",
         options=regions,
         default=regions
     )
@@ -146,7 +146,7 @@ def main():
     
     # 파워트레인 선택
     selected_powertrains = st.sidebar.multiselect(
-        "파워트레인 타입 선택",
+        "Select Powertrain Type",
         options=available_powertrains,
         default=available_powertrains
     )
@@ -156,9 +156,9 @@ def main():
     
     with col1:
         st.metric(
-            label="총 데이터 수",
+            label="No. of Data",
             value=f"{data['df'].shape[0]:,}",
-            help="분석된 총 차량 모델 수"
+            help="No. of Vehicle Models"
         )
     
     with col2:
@@ -170,7 +170,7 @@ def main():
         )
     
     with col3:
-        # 2023년 총 생산량 계산 (연도가 컬럼이므로)
+        # 2023년 총 생산량 계산 (Year가 컬럼이므로)
         total_production_2023 = data['production_data']['2023'].sum() if '2023' in data['production_data'].columns else 0
         st.metric(
             label="2023년 총 생산량",
@@ -194,25 +194,25 @@ def main():
     
     # 탭 구성
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📈 생산량 추이", 
-        "📊 점유율 변화", 
-        "🌍 지역별 분석", 
-        "⚡ 전환 속도", 
-        "📋 상세 데이터"
+        "📈 Prod. Volume Trend", 
+        "📊 Market Share Trend", 
+        "🌍 Analysis by Region", 
+        "⚡ Pace of Transition", 
+        "📋 Data Details"
     ])
     
     with tab1:
-        st.subheader("연도별 파워트레인 생산량 추이")
+        st.subheader("Powertrain Volume Trend by Year")
         
-        # 데이터 구조 변환: 연도를 인덱스로, 파워트레인을 컬럼으로
+        # 데이터 구조 변환: Year를 인덱스로, 파워트레인을 컬럼으로
         production_df = data['production_data'].set_index('powertrain_type')
-        production_df = production_df[selected_years].T  # 전치하여 연도를 인덱스로
+        production_df = production_df[selected_years].T  # 전치하여 Year를 인덱스로
         
         # 존재하는 파워트레인만 필터링
         available_powertrains = [pt for pt in selected_powertrains if pt in production_df.columns]
         filtered_production = production_df[available_powertrains]
         
-        # Plotly로 생산량 추이 그래프
+        # Plotly로 Prod. Volume Trend 그래프
         fig = go.Figure()
         
         for powertrain in available_powertrains:
@@ -226,8 +226,8 @@ def main():
             ))
         
         fig.update_layout(
-            title="연도별 파워트레인 생산량 추이",
-            xaxis_title="연도",
+            title="Powertrain Volume Trend by Year",
+            xaxis_title="Year",
             yaxis_title="생산량 (백만 대)",
             hovermode='x unified',
             height=500
@@ -240,15 +240,15 @@ def main():
         st.dataframe(filtered_production.round(2))
     
     with tab2:
-        st.subheader("파워트레인 점유율 변화")
+        st.subheader("파워트레인 Market Share Trend")
         
         # 점유율 데이터 구조 변환
         share_df = data['market_share_data'].set_index('powertrain_type')
         share_columns = [f'{year}_share' for year in selected_years if f'{year}_share' in share_df.columns]
         
         if share_columns:
-            share_df = share_df[share_columns].T  # 전치하여 연도를 인덱스로
-            # 컬럼명을 연도로 변경
+            share_df = share_df[share_columns].T  # 전치하여 Year를 인덱스로
+            # 컬럼명을 Year로 변경
             share_df.columns = [col.replace('_share', '') for col in share_df.columns]
             
             # 선택된 파워트레인만 필터링
@@ -269,8 +269,8 @@ def main():
                 ))
             
             fig.update_layout(
-                title="연도별 파워트레인 점유율 변화",
-                xaxis_title="연도",
+                title="Year별 파워트레인 Market Share Trend",
+                xaxis_title="Year",
                 yaxis_title="점유율 (%)",
                 hovermode='x unified',
                 height=500
@@ -311,7 +311,7 @@ def main():
                     regional_df,
                     aspect='auto',
                     title="지역별 EV 비중 히트맵",
-                    labels=dict(x="연도", y="지역", color="EV 비중 (%)"),
+                    labels=dict(x="Year", y="지역", color="EV 비중 (%)"),
                     color_continuous_scale='RdYlBu_r'
                 )
                 
@@ -329,7 +329,7 @@ def main():
                 
                 fig2.update_layout(
                     title="지역별 EV 비중 추이",
-                    xaxis_title="연도",
+                    xaxis_title="Year",
                     yaxis_title="EV 비중 (%)",
                     barmode='group',
                     height=500
@@ -339,16 +339,16 @@ def main():
             else:
                 st.warning("지역별 EV 데이터를 찾을 수 없습니다.")
         else:
-            st.warning("지역별 분석 데이터가 없습니다.")
+            st.warning("Analysis by Region 데이터가 없습니다.")
     
     with tab4:
-        st.subheader("EV 전환 속도 분석")
+        st.subheader("EV Pace of Transition 분석")
         
-        # 전환 속도 데이터 처리
+        # Pace of Transition 데이터 처리
         transition_data = data['transition_data']
         
         if transition_data:
-            # 전환 속도 요약 정보 표시
+            # Pace of Transition 요약 정보 표시
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
@@ -379,8 +379,8 @@ def main():
                     help="EV 생산량 변화 (백만 대)"
                 )
             
-            # 전환 속도 시각화 (단일 값이므로 막대 차트 대신 정보 표시)
-            st.subheader("전환 속도 상세 정보")
+            # Pace of Transition 시각화 (단일 값이므로 막대 차트 대신 정보 표시)
+            st.subheader("Pace of Transition 상세 정보")
             
             col1, col2 = st.columns(2)
             
@@ -406,10 +406,10 @@ def main():
                 else:
                     st.warning("상위 지역 데이터가 없습니다.")
         else:
-            st.warning("전환 속도 분석 데이터가 없습니다.")
+            st.warning("Pace of Transition 분석 데이터가 없습니다.")
     
     with tab5:
-        st.subheader("상세 데이터 분석")
+        st.subheader("Data Details 분석")
         
         # 데이터 요약
         col1, col2 = st.columns(2)
@@ -425,7 +425,7 @@ def main():
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            st.subheader("연도별 총 생산량")
+            st.subheader("Year별 총 생산량")
             # 숫자 컬럼만 선택하여 합계 계산
             numeric_cols = data['production_data'].select_dtypes(include=[np.number]).columns
             total_production = data['production_data'][numeric_cols].sum(axis=0)
@@ -433,8 +433,8 @@ def main():
             fig = px.line(
                 x=total_production.index,
                 y=total_production.values,
-                title="연도별 총 생산량 추이",
-                labels={'x': '연도', 'y': '총 생산량 (백만 대)'}
+                title="Year별 총 Prod. Volume Trend",
+                labels={'x': 'Year', 'y': '총 생산량 (백만 대)'}
             )
             st.plotly_chart(fig, use_container_width=True)
         
