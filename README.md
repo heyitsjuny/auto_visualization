@@ -1,8 +1,8 @@
 # 🚗 Automotive Powertrain Production Trend Analysis
 
-> **S&P Global Light Vehicle Forecast 데이터를 활용한 자동차 파워트레인 전환 트렌드 분석 시스템**
+> **Automotive Powertrain Transition Trend Analysis System Using S&P Global Light Vehicle Forecast Data**
 
-2000년부터 2037년까지의 글로벌 자동차 생산 데이터를 기반으로 전기차(EV), 하이브리드(HEV), 내연기관차(ICE)의 생산 추이와 Market Share Trend를 분석하는 종합 분석 플랫폼입니다.
+A comprehensive analytics platform that examines the production trends and market share dynamics of Electric Vehicles (EV), Hybrid Electric Vehicles (HEV), and Internal Combustion Engine (ICE) vehicles. The system is built on global light vehicle production data from 2000 to 2037 provided by S&P Global, enabling in-depth analysis of the ongoing powertrain transition in the automotive industry.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io)
