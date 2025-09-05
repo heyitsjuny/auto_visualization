@@ -1,6 +1,5 @@
 # 🚗 Automotive Powertrain Production Trend Analysis
 
-<<<<<<< HEAD
 > **Automotive Powertrain Transition Trend Analysis System Using S&P Global Light Vehicle Forecast Data**
 >>>>>>> 
 
