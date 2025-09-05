@@ -30,7 +30,7 @@ from src.aggregate_production import (
 # 페이지 설정
 st.set_page_config(
     page_title="Automotive Powertrain Production Trend",
-    page_icon="🚗",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -113,7 +113,7 @@ def main():
     """Main Application"""
     
     # 헤더
-    st.markdown('<h1 class="main-header">🚗 Automotive Powertrain Production Trend</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">Automotive Powertrain Production Trend</h1>', unsafe_allow_html=True)
     
     # 데이터 로딩
     with st.spinner("Loading and Analyzing Data..."):
@@ -124,7 +124,7 @@ def main():
         return
     
     # 사이드바 설정
-    st.sidebar.markdown('<h3 class="sidebar-header">📊 Analysis Setting</h3>', unsafe_allow_html=True)
+    st.sidebar.markdown('<h3 class="sidebar-header">Analysis Setting</h3>', unsafe_allow_html=True)
     
     # Year 선택
     selected_years = st.sidebar.multiselect(
@@ -194,11 +194,11 @@ def main():
     
     # 탭 구성
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📈 Prod. Volume Trend", 
-        "📊 Market Share Trend", 
-        "🌍 Analysis by Region", 
-        "⚡ Pace of Transition", 
-        "📋 Data Details"
+        "Prod. Volume Trend", 
+        "Market Share Trend", 
+        "Analysis by Region", 
+        "Pace of Transition", 
+        "Data Details"
     ])
     
     with tab1:
@@ -447,7 +447,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style='text-align: center; color: #666;'>
-        <p>🚗 Automotive Powertrain Production Trend</p>
+        <p>Automotive Powertrain Production Trend</p>
         <p>Data Source: S&P Light Vehicle Forecast | Analysis Period: 2000-2037</p>
     </div>
     """, unsafe_allow_html=True)
