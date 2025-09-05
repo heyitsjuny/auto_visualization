@@ -29,7 +29,7 @@ from src.aggregate_production import (
 
 # 페이지 설정
 st.set_page_config(
-    page_title="자동차 파워트레인 생산 트렌드 분석",
+    page_title="Automotive Powertrain Production Trend",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -113,7 +113,7 @@ def main():
     """메인 애플리케이션"""
     
     # 헤더
-    st.markdown('<h1 class="main-header">🚗 자동차 파워트레인 생산 트렌드 분석</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🚗 Automotive Powertrain Production Trend</h1>', unsafe_allow_html=True)
     
     # 데이터 로딩
     with st.spinner("데이터를 로딩하고 분석 중입니다..."):

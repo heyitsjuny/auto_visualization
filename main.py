@@ -1,5 +1,5 @@
 """
-자동차 파워트레인 생산 트렌드 분석 메인 실행 파일
+Automotive Powertrain Production Trend 메인 실행 파일
 전체 분석 파이프라인을 실행하고 결과를 생성합니다.
 """
 
@@ -37,7 +37,7 @@ def run_full_analysis():
     """전체 분석 파이프라인을 실행합니다."""
     
     start_time = datetime.now()
-    logger.info("=== 자동차 파워트레인 생산 트렌드 분석 시작 ===")
+    logger.info("=== Automotive Powertrain Production Trend 시작 ===")
     
     try:
         # 1. 데이터 로딩
@@ -120,7 +120,7 @@ def run_full_analysis():
         # 11. 결과 요약
         logger.info("11단계: 결과 요약")
         print("\n" + "="*60)
-        print("📊 자동차 파워트레인 생산 트렌드 분석 결과")
+        print("📊 Automotive Powertrain Production Trend 결과")
         print("="*60)
         
         print(f"\n📈 전환 속도 분석 ({transition['start_year']} → {transition['end_year']})")
@@ -166,7 +166,7 @@ def run_full_analysis():
 
 def main():
     """메인 실행 함수"""
-    print("🚗 자동차 파워트레인 생산 트렌드 분석")
+    print("🚗 Automotive Powertrain Production Trend")
     print("="*50)
     
     result = run_full_analysis()
