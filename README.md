@@ -47,15 +47,15 @@ snP_trend_analysis/
 ### 1. Settings
 
 ```bash
-# 저장소 클론
+# Clone the repository
 git clone https://github.com/your-username/automotive-powertrain-analysis.git
 cd automotive-powertrain-analysis
 
-# Python 가상환경 생성 (권장)
+# Create Python virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# 필요한 패키지 설치
+# Install required packages
 pip install -r requirements.txt
 ```
 
@@ -70,12 +70,12 @@ data/
 ### 3. Perform Analysis
 
 ```bash
-# 전체 분석 파이프라인 실행 (정적 이미지 생성)
+# Run the entire analysis pipeline (generate static images)
 python main.py
 
-# Streamlit 대시보드 실행
+# Run Streamlit dashboard
 python run_dashboard.py
-# 또는
+# or
 streamlit run streamlit_app.py
 ```
 
@@ -86,17 +86,17 @@ Open interactive dashboard by accessing  `http://localhost:8501`in your browser.
 ### 3. Individual Module Test
 
 ```bash
-# 데이터 로딩 테스트
+# Test data loading
 cd src
 python load_data.py
 
-# 파워트레인 분류 테스트
+# Test powertrain classification
 python classify_powertrain.py
 
-# 생산량 집계 테스트
+# Test production volume aggregation
 python aggregate_production.py
 
-# 시각화 테스트
+# Test visualization
 python visualize_trends.py
 ```
 
@@ -140,7 +140,7 @@ python visualize_trends.py
 
 | Powertrain | Classification Criteria |
 |-----------|----------|
-| **EV** | `Fuel Type` == "BEV" or `Powertrain Main Category`contains "Battery Electric" 포함 |
+| **EV** | `Fuel Type` == "BEV" or `Powertrain Main Category`contains "Battery Electric" |
 | **HEV** | `Powertrain Main Category` contains "Hybrid", "PHEV", "Mild Hybrid" |
 | **ICE** | `Fuel Type`"Gasoline", "Diesel", "CNG",etc. and not classified as EV/HEV |
 
@@ -211,20 +211,20 @@ python visualize_trends.py
 #### 1. File Loading Error
 ```bash
 # Error: No such file or directory
-# Solution: 데이터 파일 경로 확인
+# Solution: Check data file path
 ls -la data/20250701_LV_Prod_Extended_Pivot.xlsb
 ```
 
 #### 2. Package Installation Error
 ```bash
-# pyxlsb 설치 문제
+# pyxlsb installation issue
 pip install --upgrade pip
 pip install pyxlsb
 ```
 
 #### 3. Streamlit Execution Error
 ```bash
-# 포트 충돌 시
+# If port conflict occurs
 streamlit run streamlit_app.py --server.port 8502
 ```
 
