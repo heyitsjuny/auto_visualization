@@ -37,7 +37,7 @@ def run_full_analysis():
     """전체 분석 파이프라인을 실행합니다."""
     
     start_time = datetime.now()
-    logger.info("=== Automotive Powertrain Production Trend 시작 ===")
+    logger.info("=== Automotive Powertrain Production Trend Start ===")
     
     try:
         # 1. 데이터 로딩
@@ -55,27 +55,27 @@ def run_full_analysis():
         df, year_cols = extract_year_columns(df)
         logger.info(f"분석 Year: {year_cols[0]} ~ {year_cols[-1]} ({len(year_cols)}년)")
         
-        # 3. 파워트레인 분류
-        logger.info("3단계: 파워트레인 분류")
+        # 3. Powertrain 분류
+        logger.info("3단계: Powertrain 분류")
         df = classify_powertrain(df)
         
-        # 분류 결과 확인
+        # Classification Result 확인
         distribution = get_powertrain_distribution(df)
-        logger.info(f"파워트레인 분포: {distribution}")
+        logger.info(f"Powertrain Distribution: {distribution}")
         
         # 분류 검증
         validation = validate_powertrain_classification(df)
         logger.info(f"분류 검증 완료: EV {len(validation['ev_samples'])}개, HEV {len(validation['hev_samples'])}개, ICE {len(validation['ice_samples'])}개")
         
-        # 4. 생산량 집계
-        logger.info("4단계: 생산량 집계")
+        # 4. Prod. Vol. 집계
+        logger.info("4단계: Prod. Vol. 집계")
         agg_df = aggregate_production_by_year(df, year_cols)
         logger.info(f"집계 완료: {agg_df.shape}")
         
-        # 5. 점유율 계산
-        logger.info("5단계: 점유율 계산")
+        # 5. Market Share 계산
+        logger.info("5단계: Market Share 계산")
         share_df = calculate_market_share(agg_df, year_cols)
-        logger.info("점유율 계산 완료")
+        logger.info("Market Share 계산 완료")
         
         # 6. Pace of Transition 분석
         logger.info("6단계: Pace of Transition 분석")
@@ -85,12 +85,12 @@ def run_full_analysis():
         # 7. Analysis by Region
         logger.info("7단계: Analysis by Region")
         regional_results = get_regional_analysis(df, year_cols)
-        logger.info(f"Analysis by Region 완료: {len(regional_results)}개 지역")
+        logger.info(f"Analysis by Region 완료: {len(regional_results)}개 Region")
         
-        # 8. 상위 지역 선정
-        logger.info("8단계: 상위 지역 선정")
+        # 8. Top Region 선정
+        logger.info("8단계: Top Region 선정")
         top_regions = get_top_regions_by_ev_share(regional_results)
-        logger.info(f"상위 지역 선정 완료: {len(top_regions)}개 지역")
+        logger.info(f"Top Region 선정 완료: {len(top_regions)}개 Region")
         
         # 9. 출력 디렉토리 생성
         logger.info("9단계: 출력 디렉토리 생성")
@@ -105,7 +105,7 @@ def run_full_analysis():
         # Market Share Trend
         plot_market_share_trends(share_df, year_cols, "outputs/market_share_trends.png")
         
-        # 상위 지역 EV 비중
+        # Top Region EV Portion
         if len(top_regions) > 0:
             plot_top_regions_ev_share(top_regions, save_path="outputs/top_regions_ev_share.png")
         
@@ -124,13 +124,13 @@ def run_full_analysis():
         print("="*60)
         
         print(f"\n📈 Pace of Transition 분석 ({transition['start_year']} → {transition['end_year']})")
-        print(f"   • 시작 EV 비중: {transition['start_ev_share']:.1f}%")
-        print(f"   • 종료 EV 비중: {transition['end_ev_share']:.1f}%")
+        print(f"   • Start EV Portion: {transition['start_ev_share']:.1f}%")
+        print(f"   • End EV Portion: {transition['end_ev_share']:.1f}%")
         print(f"   • 변화량: {transition['share_change']:.1f}%p")
-        print(f"   • 생산량 변화: {transition['production_change']/1e6:.1f}M 대")
+        print(f"   • Prod. Vol. Change: {transition['production_change']/1e6:.1f}M 대")
         
         if len(top_regions) > 0:
-            print(f"\n🏆 2030년 EV 비중 상위 지역")
+            print(f"\n🏆 2030년 EV Portion Top Region")
             for i, (_, row) in enumerate(top_regions.head(5).iterrows(), 1):
                 print(f"   {i}. {row['region']}: {row['ev_share']:.1f}%")
         

@@ -1,6 +1,6 @@
 """
 시각화 모듈
-파워트레인 생산 트렌드와 Market Share Trend를 다양한 차트로 시각화합니다.
+Powertrain 생산 트렌드와 Market Share Trend를 다양한 차트로 시각화합니다.
 """
 
 import matplotlib.pyplot as plt
@@ -30,10 +30,10 @@ def setup_plot_style():
 def plot_production_trends(agg_df: pd.DataFrame, year_columns: List[str], 
                           save_path: Optional[str] = None) -> plt.Figure:
     """
-    파워트레인별 Prod. Volume Trend를 선 그래프로 시각화합니다.
+    Powertrain별 Prod. Volume Trend를 선 그래프로 시각화합니다.
     
     Args:
-        agg_df (pd.DataFrame): 집계된 생산량 데이터프레임
+        agg_df (pd.DataFrame): 집계된 Prod. Vol. Data프레임
         year_columns (List[str]): Year 컬럼 리스트
         save_path (Optional[str]): 저장 경로
         
@@ -76,10 +76,10 @@ def plot_production_trends(agg_df: pd.DataFrame, year_columns: List[str],
 def plot_market_share_trends(share_df: pd.DataFrame, year_columns: List[str], 
                             save_path: Optional[str] = None) -> plt.Figure:
     """
-    파워트레인 Market Share Trend를 스택 영역 차트로 시각화합니다.
+    Powertrain Market Share Trend를 스택 영역 차트로 시각화합니다.
     
     Args:
-        share_df (pd.DataFrame): 점유율 데이터프레임
+        share_df (pd.DataFrame): Market Share 데이터프레임
         year_columns (List[str]): Year 컬럼 리스트
         save_path (Optional[str]): 저장 경로
         
@@ -128,10 +128,10 @@ def plot_market_share_trends(share_df: pd.DataFrame, year_columns: List[str],
 def plot_top_regions_ev_share(top_regions_df: pd.DataFrame, target_year: str = '2030',
                              save_path: Optional[str] = None) -> plt.Figure:
     """
-    EV 비중 상위 지역을 바 차트로 시각화합니다.
+    EV Portion Top Region을 바 차트로 시각화합니다.
     
     Args:
-        top_regions_df (pd.DataFrame): 상위 지역 데이터프레임
+        top_regions_df (pd.DataFrame): Top Region 데이터프레임
         target_year (str): 기준 Year
         save_path (Optional[str]): 저장 경로
         
@@ -146,7 +146,7 @@ def plot_top_regions_ev_share(top_regions_df: pd.DataFrame, target_year: str = '
     bars = ax.bar(range(len(top_regions_df)), top_regions_df['ev_share'], 
                   color='#2E8B57', alpha=0.8, edgecolor='black', linewidth=1)
     
-    # 지역명을 X축 라벨로 설정
+    # Region명을 X축 라벨로 설정
     ax.set_xticks(range(len(top_regions_df)))
     ax.set_xticklabels(top_regions_df['region'], rotation=45, ha='right')
     
@@ -166,7 +166,7 @@ def plot_top_regions_ev_share(top_regions_df: pd.DataFrame, target_year: str = '
     
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        logger.info(f"상위 지역 EV 비중 그래프 저장: {save_path}")
+        logger.info(f"Top Region EV Portion 그래프 저장: {save_path}")
     
     return fig
 
@@ -175,12 +175,12 @@ def plot_transition_speed_comparison(regional_results: Dict[str, pd.DataFrame],
                                    start_year: str = '2023', end_year: str = '2037',
                                    save_path: Optional[str] = None) -> plt.Figure:
     """
-    지역별 Pace of Transition를 비교하는 바 차트를 생성합니다.
+    Region별 Pace of Transition를 비교하는 바 차트를 생성합니다.
     
     Args:
         regional_results (Dict[str, pd.DataFrame]): Analysis by Region 결과
-        start_year (str): 시작 Year
-        end_year (str): 종료 Year
+        start_year (str): Start Year
+        end_year (str): End Year
         save_path (Optional[str]): 저장 경로
         
     Returns:
@@ -216,7 +216,7 @@ def plot_transition_speed_comparison(regional_results: Dict[str, pd.DataFrame],
     bars = ax.bar(range(len(transition_df)), transition_df['share_change'], 
                   color=colors, alpha=0.8, edgecolor='black', linewidth=1)
     
-    # 지역명을 X축 라벨로 설정
+    # Region명을 X축 라벨로 설정
     ax.set_xticks(range(len(transition_df)))
     ax.set_xticklabels(transition_df['region'], rotation=45, ha='right')
     
@@ -252,9 +252,9 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     종합 대시보드를 생성합니다.
     
     Args:
-        share_df (pd.DataFrame): 점유율 데이터프레임
+        share_df (pd.DataFrame): Market Share 데이터프레임
         year_columns (List[str]): Year 컬럼 리스트
-        top_regions_df (pd.DataFrame): 상위 지역 데이터프레임
+        top_regions_df (pd.DataFrame): Top Region 데이터프레임
         transition_analysis (Dict): Pace of Transition 분석 결과
         save_path (Optional[str]): 저장 경로
         
@@ -290,7 +290,7 @@ def create_summary_dashboard(share_df: pd.DataFrame, year_columns: List[str],
     ax1.grid(True, alpha=0.3)
     ax1.set_ylim(0, 100)
     
-    # 2. 상위 지역 EV 비중 (좌하단)
+    # 2. Top Region EV Portion (좌하단)
     ax2 = fig.add_subplot(gs[1, 0])
     bars = ax2.bar(range(len(top_regions_df)), top_regions_df['ev_share'], 
                    color='#2E8B57', alpha=0.8)
@@ -357,7 +357,7 @@ def main():
         df, year_cols = extract_year_columns(df)
         df = classify_powertrain(df)
         
-        # 생산량 집계 및 점유율 계산
+        # Prod. Vol. 집계 및 Market Share 계산
         agg_df = aggregate_production_by_year(df, year_cols)
         share_df = calculate_market_share(agg_df, year_cols)
         

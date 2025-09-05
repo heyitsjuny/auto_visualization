@@ -78,13 +78,13 @@ def load_and_process_data():
         # Year 컬럼 추출
         df, year_cols = extract_year_columns(df)
         
-        # 파워트레인 분류
+        # Powertrain 분류
         df = classify_powertrain(df)
         
-        # 생산량 집계
+        # Prod. Vol. 집계
         production_data = aggregate_production_by_year(df, year_cols)
         
-        # 점유율 계산
+        # Market Share 계산
         market_share_data = calculate_market_share(production_data, year_cols)
         
         # Analysis by Region
@@ -93,7 +93,7 @@ def load_and_process_data():
         # Pace of Transition 분석
         transition_data = get_transition_analysis(market_share_data, year_cols)
         
-        # 상위 지역 분석
+        # Top Region 분석
         top_regions = get_top_regions_by_ev_share(regional_data, target_year='2030')
         
         return {
@@ -133,7 +133,7 @@ def main():
         default=['2023', '2025', '2030', '2035', '2037']
     )
     
-    # 지역 선택
+    # Region 선택
     regions = ['Greater China', 'Europe', 'Americas', 'Asia Pacific']
     selected_regions = st.sidebar.multiselect(
         "Select Region",
@@ -141,10 +141,10 @@ def main():
         default=regions
     )
     
-    # 실제 존재하는 파워트레인 타입 확인
+    # 실제 존재하는 Powertrain 타입 확인
     available_powertrains = data['production_data']['powertrain_type'].unique().tolist()
     
-    # 파워트레인 선택
+    # Powertrain 선택
     selected_powertrains = st.sidebar.multiselect(
         "Select Powertrain Type",
         options=available_powertrains,
@@ -164,22 +164,22 @@ def main():
     with col2:
         ev_count = data['df']['powertrain_type'].value_counts().get('EV', 0)
         st.metric(
-            label="EV 모델 수",
+            label="No. of EV Model",
             value=f"{ev_count:,}",
-            help="전기차 모델 수"
+            help="No. of EV Model"
         )
     
     with col3:
-        # 2023년 총 생산량 계산 (Year가 컬럼이므로)
+        # 2023 Total Vol 계산 (Year가 컬럼이므로)
         total_production_2023 = data['production_data']['2023'].sum() if '2023' in data['production_data'].columns else 0
         st.metric(
-            label="2023년 총 생산량",
+            label="2023 Total Vol",
             value=f"{total_production_2023:,.0f}M",
-            help="2023년 예상 총 생산량 (백만 대)"
+            help="2023 Exp. Total Vol (M)"
         )
     
     with col4:
-        # 2037년 EV 비중 계산
+        # EV % in 2037 계산
         ev_share_2037 = 0
         if '2037_share' in data['market_share_data'].columns:
             ev_row = data['market_share_data'][data['market_share_data']['powertrain_type'] == 'EV']
@@ -187,9 +187,9 @@ def main():
                 ev_share_2037 = ev_row['2037_share'].iloc[0]
         
         st.metric(
-            label="2037년 EV 비중",
+            label="EV % in 2037",
             value=f"{ev_share_2037:.1f}%",
-            help="2037년 전기차 예상 점유율"
+            help="Exp. EV % in 2037"
         )
     
     # 탭 구성
@@ -204,11 +204,11 @@ def main():
     with tab1:
         st.subheader("Powertrain Volume Trend by Year")
         
-        # 데이터 구조 변환: Year를 인덱스로, 파워트레인을 컬럼으로
+        # 데이터 구조 변환: Year를 인덱스로, Powertrain을 컬럼으로
         production_df = data['production_data'].set_index('powertrain_type')
         production_df = production_df[selected_years].T  # 전치하여 Year를 인덱스로
         
-        # 존재하는 파워트레인만 필터링
+        # 존재하는 Powertrain만 필터링
         available_powertrains = [pt for pt in selected_powertrains if pt in production_df.columns]
         filtered_production = production_df[available_powertrains]
         
@@ -228,21 +228,21 @@ def main():
         fig.update_layout(
             title="Powertrain Volume Trend by Year",
             xaxis_title="Year",
-            yaxis_title="생산량 (백만 대)",
+            yaxis_title="Prod. Vol. (M)",
             hovermode='x unified',
             height=500
         )
         
         st.plotly_chart(fig, use_container_width=True)
         
-        # 생산량 데이터 테이블
-        st.subheader("생산량 데이터")
+        # Prod. Vol. Data 테이블
+        st.subheader("Prod. Vol. Data")
         st.dataframe(filtered_production.round(2))
     
     with tab2:
-        st.subheader("파워트레인 Market Share Trend")
+        st.subheader("Powertrain Market Share Trend")
         
-        # 점유율 데이터 구조 변환
+        # Market Share 데이터 구조 변환
         share_df = data['market_share_data'].set_index('powertrain_type')
         share_columns = [f'{year}_share' for year in selected_years if f'{year}_share' in share_df.columns]
         
@@ -251,7 +251,7 @@ def main():
             # 컬럼명을 Year로 변경
             share_df.columns = [col.replace('_share', '') for col in share_df.columns]
             
-            # 선택된 파워트레인만 필터링
+            # 선택된 Powertrain만 필터링
             available_powertrains = [pt for pt in selected_powertrains if pt in share_df.columns]
             filtered_share = share_df[available_powertrains]
             
@@ -269,27 +269,27 @@ def main():
                 ))
             
             fig.update_layout(
-                title="Year별 파워트레인 Market Share Trend",
+                title="Year별 Powertrain Market Share Trend",
                 xaxis_title="Year",
-                yaxis_title="점유율 (%)",
+                yaxis_title="Market Share (%)",
                 hovermode='x unified',
                 height=500
             )
             
             st.plotly_chart(fig, use_container_width=True)
             
-            # 점유율 데이터 테이블
-            st.subheader("점유율 데이터")
+            # Market Share 데이터 테이블
+            st.subheader("Market Share data")
             st.dataframe(filtered_share.round(2))
         else:
-            st.warning("점유율 데이터를 찾을 수 없습니다.")
+            st.warning("Cannot find Market Share data.")
     
     with tab3:
-        st.subheader("지역별 EV 비중 분석")
+        st.subheader("EV % by Regions")
         
-        # 지역별 데이터 처리
+        # Region별 데이터 처리
         if data['regional_data']:
-            # 지역별 EV 비중 데이터 수집
+            # Region별 EV Portion 데이터 수집
             regional_ev_data = {}
             for region, region_df in data['regional_data'].items():
                 if region in selected_regions:
@@ -310,14 +310,14 @@ def main():
                 fig = px.imshow(
                     regional_df,
                     aspect='auto',
-                    title="지역별 EV 비중 히트맵",
-                    labels=dict(x="Year", y="지역", color="EV 비중 (%)"),
+                    title="EV% Heatmap by Regions",
+                    labels=dict(x="Year", y="Region", color="EV Portion (%)"),
                     color_continuous_scale='RdYlBu_r'
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # 지역별 막대 차트
+                # Region별 막대 차트
                 fig2 = go.Figure()
                 
                 for region in regional_df.index:
@@ -328,21 +328,21 @@ def main():
                     ))
                 
                 fig2.update_layout(
-                    title="지역별 EV 비중 추이",
+                    title="EV Portion Trend by Regions",
                     xaxis_title="Year",
-                    yaxis_title="EV 비중 (%)",
+                    yaxis_title="EV Portion (%)",
                     barmode='group',
                     height=500
                 )
                 
                 st.plotly_chart(fig2, use_container_width=True)
             else:
-                st.warning("지역별 EV 데이터를 찾을 수 없습니다.")
+                st.warning("Cannot find Regional EV Data.")
         else:
-            st.warning("Analysis by Region 데이터가 없습니다.")
+            st.warning("Dataname Analysis by Region does not exist.")
     
     with tab4:
-        st.subheader("EV Pace of Transition 분석")
+        st.subheader("EV Pace of Transition Analysis")
         
         # Pace of Transition 데이터 처리
         transition_data = data['transition_data']
@@ -353,79 +353,79 @@ def main():
             
             with col1:
                 st.metric(
-                    label="시작 EV 비중",
+                    label="Start EV Portion",
                     value=f"{transition_data.get('start_ev_share', 0):.1f}%",
-                    help=f"{transition_data.get('start_year', '2023')}년 EV 비중"
+                    help=f"{transition_data.get('start_year', '2023')} EV Portion"
                 )
             
             with col2:
                 st.metric(
-                    label="종료 EV 비중",
+                    label="End EV Portion",
                     value=f"{transition_data.get('end_ev_share', 0):.1f}%",
-                    help=f"{transition_data.get('end_year', '2037')}년 EV 비중"
+                    help=f"{transition_data.get('end_year', '2037')} EV Portion"
                 )
             
             with col3:
                 st.metric(
-                    label="비중 변화",
+                    label="Portion Change",
                     value=f"{transition_data.get('share_change', 0):.1f}%p",
-                    help="EV 비중 변화량"
+                    help="EV Portion Change"
                 )
             
             with col4:
                 st.metric(
-                    label="생산량 변화",
+                    label="Prod. Vol. Change",
                     value=f"{transition_data.get('production_change', 0)/1e6:.1f}M",
-                    help="EV 생산량 변화 (백만 대)"
+                    help="EV Prod. Vol. Change (M)"
                 )
             
             # Pace of Transition 시각화 (단일 값이므로 막대 차트 대신 정보 표시)
-            st.subheader("Pace of Transition 상세 정보")
+            st.subheader("Pace of Transition details")
             
             col1, col2 = st.columns(2)
             
             with col1:
-                st.subheader("글로벌 EV 전환 요약")
+                st.subheader("Summary-Global EV Transition")
                 transition_info = f"""
-                **분석 기간**: {transition_data.get('start_year', '2023')} → {transition_data.get('end_year', '2037')}
+                **Period**: {transition_data.get('start_year', '2023')} → {transition_data.get('end_year', '2037')}
                 
-                **시작 EV 비중**: {transition_data.get('start_ev_share', 0):.1f}%
-                **종료 EV 비중**: {transition_data.get('end_ev_share', 0):.1f}%
-                **비중 변화**: {transition_data.get('share_change', 0):.1f}%p
+                **Start EV Portion**: {transition_data.get('start_ev_share', 0):.1f}%
+                **End EV Portion**: {transition_data.get('end_ev_share', 0):.1f}%
+                **Portion Change**: {transition_data.get('share_change', 0):.1f}%p
                 
-                **시작 EV 생산량**: {transition_data.get('start_ev_production', 0)/1e6:.1f}M 대
-                **종료 EV 생산량**: {transition_data.get('end_ev_production', 0)/1e6:.1f}M 대
-                **생산량 변화**: {transition_data.get('production_change', 0)/1e6:.1f}M 대
+                **Start EV Prod. Vol.**: {transition_data.get('start_ev_production', 0)/1e6:.1f}M 대
+                **End EV Prod. Vol.**: {transition_data.get('end_ev_production', 0)/1e6:.1f}M 대
+                **Prod. Vol. Change**: {transition_data.get('production_change', 0)/1e6:.1f}M 대
                 """
                 st.markdown(transition_info)
             
             with col2:
-                st.subheader("2030년 EV 비중 상위 지역")
+                st.subheader("2030 EV Portion Top Region")
                 if not data['top_regions'].empty:
                     st.dataframe(data['top_regions'])
                 else:
-                    st.warning("상위 지역 데이터가 없습니다.")
+                    st.warning("Top Region Data does not exist.")
         else:
-            st.warning("Pace of Transition 분석 데이터가 없습니다.")
+            st.warning("Pace of Transition Analysis Data does not exist.")
     
     with tab5:
-        st.subheader("Data Details 분석")
+        st.subheader("Data Details Analysis")
         
         # 데이터 요약
         col1, col2 = st.columns(2)
         
         with col1:
-            st.subheader("파워트레인 분포")
+            st.subheader("Powertrain Distribution")
             powertrain_dist = data['df']['powertrain_type'].value_counts()
             fig = px.pie(
                 values=powertrain_dist.values,
                 names=powertrain_dist.index,
-                title="파워트레인 분류 결과"
+                title="Powertrain Classification Result"
             )
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            st.subheader("Year별 총 생산량")
+            st.subheader("Total Vol. by Year")
             # 숫자 컬럼만 선택하여 합계 계산
             numeric_cols = data['production_data'].select_dtypes(include=[np.number]).columns
             total_production = data['production_data'][numeric_cols].sum(axis=0)
@@ -433,13 +433,13 @@ def main():
             fig = px.line(
                 x=total_production.index,
                 y=total_production.values,
-                title="Year별 총 Prod. Volume Trend",
-                labels={'x': 'Year', 'y': '총 생산량 (백만 대)'}
+                title="Total Prod. Volume Trend by Year",
+                labels={'x': 'Year', 'y': 'Total Prod. Vol. (M)'}
             )
             st.plotly_chart(fig, use_container_width=True)
         
-        # 원본 데이터 샘플
-        st.subheader("원본 데이터 샘플 (상위 100행)")
+        # Original Data Sample
+        st.subheader("Original Data Sample (Top 100 Lines)")
         sample_cols = ['S: Fuel Type', 'S: Powertrain Main Category', 'powertrain_type'] + selected_years[:5]
         st.dataframe(data['df'][sample_cols].head(100))
     
@@ -448,7 +448,7 @@ def main():
     st.markdown("""
     <div style='text-align: center; color: #666;'>
         <p>🚗 Automotive Powertrain Production Trend</p>
-        <p>데이터 출처: S&P Light Vehicle Forecast | 분석 기간: 2000-2037년</p>
+        <p>Data Source: S&P Light Vehicle Forecast | Analysis Period: 2000-2037</p>
     </div>
     """, unsafe_allow_html=True)
 

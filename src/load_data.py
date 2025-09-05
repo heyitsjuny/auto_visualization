@@ -24,7 +24,7 @@ def load_excel_data(file_path: str) -> pd.DataFrame:
         pd.DataFrame: 로드된 데이터프레임
     """
     try:
-        logger.info(f"데이터 로딩 시작: {file_path}")
+        logger.info(f"데이터 로딩 Start: {file_path}")
         
         # 파일 확장자에 따라 적절한 엔진과 시트 선택
         if file_path.endswith('.xlsb'):
@@ -42,10 +42,10 @@ def load_excel_data(file_path: str) -> pd.DataFrame:
 
 def extract_year_columns(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
     """
-    Year별 생산량 컬럼을 추출하고 정리합니다.
+    Year별 Prod. Vol. 컬럼을 추출하고 정리합니다.
     
     Args:
-        df (pd.DataFrame): 원본 데이터프레임
+        df (pd.DataFrame): Original 데이터프레임
         
     Returns:
         Tuple[pd.DataFrame, List[str]]: 정리된 데이터프레임과 Year 컬럼 리스트

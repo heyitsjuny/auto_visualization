@@ -1,6 +1,6 @@
 # 🚗 Automotive Powertrain Production Trend Analysis
 
-> **S&P Global Light Vehicle Forecast 데이터를 활용한 자동차 파워트레인 전환 트렌드 분석 시스템**
+> **S&P Global Light Vehicle Forecast 데이터를 활용한 자동차 Powertrain 전환 트렌드 분석 시스템**
 
 2000년부터 2037년까지의 글로벌 자동차 생산 데이터를 기반으로 전기차(EV), 하이브리드(HEV), 내연기관차(ICE)의 생산 추이와 Market Share Trend를 분석하는 종합 분석 플랫폼입니다.
 
@@ -10,21 +10,21 @@
 
 ## 📋 프로젝트 개요
 
-- **목표**: 자동차 파워트레인 전환 트렌드 분석 및 시각화
+- **목표**: 자동차 Powertrain 전환 트렌드 분석 및 시각화
 - **데이터**: S&P Global Light Vehicle Forecast Excel 데이터
 - **기간**: 2000년 ~ 2037년 (38년간)
-- **분석 대상**: EV, HEV, ICE 파워트레인
-- **주요 기능**: Prod. Volume Trend, Market Share Trend, 지역별 비교, Pace of Transition 분석
+- **분석 대상**: EV, HEV, ICE Powertrain
+- **주요 기능**: Prod. Volume Trend, Market Share Trend, Region별 비교, Pace of Transition 분석
 - **플랫폼**: Streamlit 기반 인터랙티브 대시보드 + matplotlib 정적 시각화
 
 ## 🎯 주요 분석 결과
 
-### 글로벌 파워트레인 전환 트렌드
+### 글로벌 Powertrain 전환 트렌드
 - **2023년**: EV 11.71% (10.6M 대), ICE 88.29% (79.9M 대)
 - **2037년**: EV 46.7% (47.1M 대), ICE 53.3% (53.8M 대)
-- **Pace of Transition**: 15년간 EV 비중 35%p 증가
+- **Pace of Transition**: 15년간 EV Portion 35%p 증가
 
-### 지역별 특성
+### Region별 특성
 - **Greater China**: EV Pace of Transition 최고
 - **Europe**: 정책 기반 빠른 전환
 - **Americas**: 점진적 전환
@@ -34,17 +34,17 @@
 
 ```
 snP_trend_analysis/
-├── data/                             # S&P 원본 데이터
+├── data/                             # S&P Original 데이터
 │   └── 20250701_LV_Prod_Extended_Pivot.xlsb
 ├── src/                              # 분석 코드 모듈
 │   ├── load_data.py                  # 데이터 로딩 및 전처리
-│   ├── classify_powertrain.py        # 파워트레인 분류
-│   ├── aggregate_production.py       # 생산량 집계 및 점유율 계산
+│   ├── classify_powertrain.py        # Powertrain 분류
+│   ├── aggregate_production.py       # Prod. Vol. 집계 및 Market Share 계산
 │   └── visualize_trends.py           # 시각화 기능
 ├── outputs/                          # 분석 결과물
 │   ├── production_trends.png         # Prod. Volume Trend 그래프
 │   ├── market_share_trends.png       # Market Share Trend 그래프
-│   ├── top_regions_ev_share.png      # 상위 지역 EV 비중
+│   ├── top_regions_ev_share.png      # Top Region EV Portion
 │   ├── transition_speed.png          # Pace of Transition 비교
 │   └── summary_dashboard.png         # 종합 대시보드
 ├── streamlit_app.py                  # Streamlit 대시보드 앱
@@ -102,10 +102,10 @@ streamlit run streamlit_app.py
 cd src
 python load_data.py
 
-# 파워트레인 분류 테스트
+# Powertrain 분류 테스트
 python classify_powertrain.py
 
-# 생산량 집계 테스트
+# Prod. Vol. 집계 테스트
 python aggregate_production.py
 
 # 시각화 테스트
@@ -116,16 +116,16 @@ python visualize_trends.py
 
 ### 1. 데이터 처리 (F-01 ~ F-05)
 - **F-01**: S&P Excel 파일 로딩
-- **F-02**: Year별 생산량 컬럼 정리 (2023~2037)
-- **F-03**: 파워트레인 분류 (EV/HEV/ICE)
-- **F-04**: Year별 생산량 집계
-- **F-05**: 점유율 계산
+- **F-02**: Year별 Prod. Vol. 컬럼 정리 (2023~2037)
+- **F-03**: Powertrain 분류 (EV/HEV/ICE)
+- **F-04**: Year별 Prod. Vol. 집계
+- **F-05**: Market Share 계산
 
 ### 2. 시각화 (F-06 ~ F-09)
-- **F-06**: 파워트레인별 Prod. Volume Trend (선 그래프)
+- **F-06**: Powertrain별 Prod. Volume Trend (선 그래프)
 - **F-07**: Market Share Trend (스택 영역 차트)
-- **F-08**: 2030년 EV 비중 상위 지역 (바 차트)
-- **F-09**: 지역별 Pace of Transition 비교
+- **F-08**: 2030년 EV Portion Top Region (바 차트)
+- **F-09**: Region별 Pace of Transition 비교
 
 ### 3. 출력 (F-10 ~ F-12)
 - **F-10**: 분석 리포트 생성
@@ -136,21 +136,21 @@ python visualize_trends.py
 
 ### 주요 기능
 - **📈 Prod. Volume Trend**: Powertrain Volume Trend by Year 시각화
-- **📊 Market Share Trend**: 파워트레인별 Market Share Trend 스택 차트
-- **🌍 Analysis by Region**: 지역별 EV 비중 히트맵 및 막대 차트
-- **⚡ Pace of Transition**: 2023→2037년 EV 비중 변화량 분석
-- **📋 Data Details**: 파워트레인 분포 및 원본 데이터 샘플
+- **📊 Market Share Trend**: Powertrain별 Market Share Trend 스택 차트
+- **🌍 Analysis by Region**: EV% Heatmap by Regions 및 막대 차트
+- **⚡ Pace of Transition**: 2023→EV % in 2037 변화량 분석
+- **📋 Data Details**: Powertrain Distribution 및 Original Data Sample
 
 ### 인터랙티브 기능
 - Year 선택 (다중 선택 가능)
-- 지역 선택 (다중 선택 가능)
+- Region 선택 (다중 선택 가능)
 - Select Powertrain Type (EV/HEV/ICE)
 - 실시간 데이터 필터링
 - Plotly 기반 인터랙티브 차트
 
-## 🔍 파워트레인 분류 기준
+## 🔍 Powertrain 분류 기준
 
-| 파워트레인 | 분류 조건 |
+| Powertrain | 분류 조건 |
 |-----------|----------|
 | **EV (전기차)** | `Fuel Type` == "BEV" 또는 `Powertrain Main Category`에 "Battery Electric" 포함 |
 | **HEV (하이브리드)** | `Powertrain Main Category`에 "Hybrid", "PHEV", "Mild Hybrid" 포함 |
@@ -159,18 +159,18 @@ python visualize_trends.py
 ## 📈 주요 분석 결과
 
 ### 1. Pace of Transition 분석
-- 2023년 → 2037년 EV 비중 변화량
-- 지역별 Pace of Transition 비교
-- 생산량 변화 추이
+- 2023년 → EV % in 2037 변화량
+- Region별 Pace of Transition 비교
+- Prod. Vol. Change 추이
 
 ### 2. Analysis by Region
-- 2030년 기준 EV 비중 상위 지역
-- 지역별 파워트레인 선호도
+- 2030년 기준 EV Portion Top Region
+- Region별 Powertrain 선호도
 - Pace of Transition 차이 분석
 
 ### 3. 시장 전략 인사이트
-- 글로벌 파워트레인 전환 트렌드
-- 지역별 시장 특성
+- 글로벌 Powertrain 전환 트렌드
+- Region별 시장 특성
 - 미래 생산 계획 수립 지원
 
 ## 🎯 활용 방안
@@ -201,7 +201,7 @@ python visualize_trends.py
 ## 🚀 주요 기능
 
 ### 📊 인터랙티브 대시보드
-- **실시간 필터링**: Year, 지역, Select Powertrain Type
+- **실시간 필터링**: Year, Region, Select Powertrain Type
 - **동적 차트**: Plotly 기반 인터랙티브 시각화
 - **메트릭 카드**: 핵심 지표 한눈에 확인
 - **데이터 테이블**: Data Details 탐색
@@ -212,9 +212,9 @@ python visualize_trends.py
 - **출력 최적화**: 리포트 및 프레젠테이션용
 
 ### 🔍 분석 모듈
-- **자동 분류**: 파워트레인 타입 자동 식별
+- **자동 분류**: Powertrain 타입 자동 식별
 - **Pace of Transition**: EV 전환 트렌드 정량 분석
-- **지역별 비교**: 시장 특성 및 선호도 분석
+- **Region별 비교**: 시장 특성 및 선호도 분석
 
 ## 🛡️ 문제 해결
 

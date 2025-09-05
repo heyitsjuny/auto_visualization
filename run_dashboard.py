@@ -43,16 +43,16 @@ def main():
     
     # Streamlit 실행
     try:
-        print("\n🌐 Streamlit 대시보드를 시작합니다...")
+        print("\n🌐 Streamlit 대시보드를 Start합니다...")
         print("브라우저에서 http://localhost:8501 을 열어주세요.")
-        print("대시보드를 종료하려면 Ctrl+C를 누르세요.")
+        print("대시보드를 End하려면 Ctrl+C를 누르세요.")
         print("-" * 50)
         
         # Streamlit 실행
         subprocess.run([sys.executable, "-m", "streamlit", "run", "streamlit_app.py"])
         
     except KeyboardInterrupt:
-        print("\n\n👋 대시보드가 종료되었습니다.")
+        print("\n\n👋 대시보드가 End되었습니다.")
     except Exception as e:
         print(f"\n❌ 오류가 발생했습니다: {e}")
         print("Streamlit이 설치되어 있는지 확인해주세요:")

@@ -1,5 +1,5 @@
 """
-파워트레인 분류 모듈
+Powertrain 분류 모듈
 S&P 데이터의 Fuel Type과 Powertrain Category를 기반으로 EV/HEV/ICE를 분류합니다.
 """
 
@@ -15,15 +15,15 @@ logger = logging.getLogger(__name__)
 
 def classify_powertrain(df: pd.DataFrame) -> pd.DataFrame:
     """
-    파워트레인을 EV/HEV/ICE로 분류합니다.
+    Powertrain을 EV/HEV/ICE로 분류합니다.
     
     Args:
-        df (pd.DataFrame): 원본 데이터프레임
+        df (pd.DataFrame): Original 데이터프레임
         
     Returns:
-        pd.DataFrame: 파워트레인 분류가 추가된 데이터프레임
+        pd.DataFrame: Powertrain 분류가 추가된 데이터프레임
     """
-    # 파워트레인 분류 컬럼 초기화
+    # Powertrain 분류 컬럼 초기화
     df['powertrain_type'] = 'ICE'  # 기본값은 ICE
     
     # EV 분류 (전기차)
@@ -47,29 +47,29 @@ def classify_powertrain(df: pd.DataFrame) -> pd.DataFrame:
     
     # ICE는 기본값이므로 별도 처리 불필요
     
-    logger.info("파워트레인 분류 완료")
+    logger.info("Powertrain 분류 완료")
     return df
 
 
 def get_powertrain_distribution(df: pd.DataFrame) -> Dict[str, int]:
     """
-    파워트레인 분포를 계산합니다.
+    Powertrain Distribution를 계산합니다.
     
     Args:
         df (pd.DataFrame): 분류된 데이터프레임
         
     Returns:
-        Dict[str, int]: 파워트레인별 개수
+        Dict[str, int]: Powertrain별 개수
     """
     distribution = df['powertrain_type'].value_counts().to_dict()
     
-    logger.info(f"파워트레인 분포: {distribution}")
+    logger.info(f"Powertrain Distribution: {distribution}")
     return distribution
 
 
 def validate_powertrain_classification(df: pd.DataFrame) -> Dict[str, List[str]]:
     """
-    파워트레인 분류 결과를 검증합니다.
+    Powertrain Classification Result를 검증합니다.
     
     Args:
         df (pd.DataFrame): 분류된 데이터프레임
@@ -84,7 +84,7 @@ def validate_powertrain_classification(df: pd.DataFrame) -> Dict[str, List[str]]
         'unclassified': []
     }
     
-    # 각 파워트레인 타입별 샘플 추출
+    # 각 Powertrain 타입별 Sample 추출
     for powertrain_type in ['EV', 'HEV', 'ICE']:
         sample_df = df[df['powertrain_type'] == powertrain_type].head(3)
         for _, row in sample_df.iterrows():
@@ -100,16 +100,16 @@ def validate_powertrain_classification(df: pd.DataFrame) -> Dict[str, List[str]]
     if len(unclassified) > 0:
         validation_results['unclassified'] = unclassified[['S: Fuel Type', 'S: Powertrain Main Category']].head(5).to_dict('records')
     
-    logger.info("파워트레인 분류 검증 완료")
+    logger.info("Powertrain 분류 검증 완료")
     return validation_results
 
 
 def get_powertrain_columns() -> List[str]:
     """
-    파워트레인 분류에 사용되는 컬럼들을 반환합니다.
+    Powertrain 분류에 사용되는 컬럼들을 반환합니다.
     
     Returns:
-        List[str]: 파워트레인 관련 컬럼 리스트
+        List[str]: Powertrain 관련 컬럼 리스트
     """
     return [
         'S: Fuel Type',
@@ -121,7 +121,7 @@ def get_powertrain_columns() -> List[str]:
 
 
 def main():
-    """파워트레인 분류 테스트 함수"""
+    """Powertrain 분류 테스트 함수"""
     from load_data import load_excel_data, extract_year_columns
     
     try:
@@ -130,21 +130,21 @@ def main():
         df = load_excel_data(file_path)
         df, year_cols = extract_year_columns(df)
         
-        # 파워트레인 분류
+        # Powertrain 분류
         df = classify_powertrain(df)
         
-        # 분포 확인
+        # Distribution 확인
         distribution = get_powertrain_distribution(df)
-        print(f"파워트레인 분포: {distribution}")
+        print(f"Powertrain Distribution: {distribution}")
         
         # 검증
         validation = validate_powertrain_classification(df)
-        print(f"검증 결과: {len(validation['ev_samples'])} EV, {len(validation['hev_samples'])} HEV, {len(validation['ice_samples'])} ICE 샘플")
+        print(f"검증 결과: {len(validation['ev_samples'])} EV, {len(validation['hev_samples'])} HEV, {len(validation['ice_samples'])} ICE Sample")
         
         return df
         
     except Exception as e:
-        logger.error(f"파워트레인 분류 테스트 실패: {e}")
+        logger.error(f"Powertrain 분류 테스트 실패: {e}")
         return None
 
 
